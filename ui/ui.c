@@ -48,19 +48,20 @@ void start_menu(UI* ui) {
                 printf("String: ");
                 read_input_country_name(country_name, 256);
                 int size;
-                Country* countries = get_countries_containing_string(ui->service, country_name, &size);
+                Country** countries = get_countries_containing_string(ui->service, country_name, &size);
                 if (size == 0) {
                     printf("\nThere are no countries with such a name");
                     break;
                 }
                 char temp[256];
-                country_to_string(&countries[0], temp);
+                country_to_string(countries[0], temp);
+                destroy_country(countries[0]);
                 printf("%d. %s", 1, temp);
                 for (int i = 1; i < size; ++i) {
-                    country_to_string(&countries[i], temp);
+                    country_to_string(countries[i], temp);
                     printf("\n%d. %s", i + 1, temp);
+                    destroy_country(countries[i]);
                 }
-                free(countries);
                 break;
             }
             case ADD_COUNTRY: {

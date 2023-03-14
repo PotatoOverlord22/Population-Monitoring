@@ -3,7 +3,7 @@
 #include "../domain/country.h"
 
 typedef struct {
-    Country* data;
+    Country** data;
     int size;
 } Repository;
 
@@ -11,7 +11,7 @@ Repository* create_repository();
 
 void destroy_repository(Repository*);
 
-Country* get_all(Repository*);
+Country** get_all(Repository*);
 
 int get_size(Repository*);
 

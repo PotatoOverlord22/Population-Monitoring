@@ -16,7 +16,7 @@ int remove_country_service(Service* service, char* name, char* continent, double
 
 void update_country_service(Service*, Country*);
 
-Country* get_countries_containing_string(Service* service, char* substring, int* size);
+Country** get_countries_containing_string(Service* service, char* substring, int* size);
 
 void initialize_hard_coded_countries(Service*);
 

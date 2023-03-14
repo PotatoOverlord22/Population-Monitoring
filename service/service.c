@@ -1,8 +1,6 @@
 #include "service.h"
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
-#include <ctype.h>
 
 Service* create_service(Repository* repository) {
     Service* new_service = malloc(sizeof(Service));
@@ -32,15 +30,15 @@ int remove_country_service(Service* service, char* name, char* continent, double
 
 void update_country_service(Service*, Country*);
 
-Country* get_countries_containing_string(Service* service, char* substring, int* size) {
+Country** get_countries_containing_string(Service* service, char* substring, int* size) {
     if (strcmp(substring, "") == 0) {
         *size = get_size(service->repository);
         return get_all(service->repository);
     }
-    Country* countries = malloc(sizeof(Country) * get_size(service->repository));
+    Country** countries = malloc(sizeof(Country) * get_size(service->repository));
     *size = 0;
     for (int i = 0; i < get_size(service->repository); ++i) {
-        if (strstr(get_name(&service->repository->data[i]), substring) != 0) {
+        if (strstr(get_name(service->repository->data[i]), substring) != 0) {
             countries[(*size)++] = service->repository->data[i];
         }
     }
