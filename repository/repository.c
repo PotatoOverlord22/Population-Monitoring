@@ -56,6 +56,7 @@ int remove_country(Repository* repository, Country* country_to_remove) {
             strcpy(repository->data[i]->name, repository->data[repository->size - 1]->name);
             strcpy(repository->data[i]->continent, repository->data[repository->size - 1]->continent);
             repository->data[i]->population = repository->data[repository->size - 1]->population;
+            destroy_country(repository->data[repository->size - 1]);
             repository->size--;
             found = 1;
         }
@@ -64,6 +65,11 @@ int remove_country(Repository* repository, Country* country_to_remove) {
 }
 
 int remove_country_by_name(Repository* repository, char* name) {
+    /*
+     *      Removes countries from the repository that have the same name as the given string
+     *  returns -> True if at least one country was removed successfully
+     *          -> False if the country was not in the repository in the first place.
+     */
     int found = 0;
     for (int i = 0; i < repository->size; ++i) {
         if (strcmp(get_name(repository->data[i]), name) == 0) {
