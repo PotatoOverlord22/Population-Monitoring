@@ -57,8 +57,8 @@ void start_menu(UI* ui) {
                     country_to_string(countries[i], temporary_string);
                     printf("\n%d. %s", i + 1, temporary_string);
                 }
-                for (int i = 0; i < get_size(ui->service->repository); ++i)
-                    destroy_country(countries[i]);
+//                for (int i = 0; i < get_size(ui->service->repository); ++i)
+//                    destroy_country(countries[i]);
                 break;
             }
             case ADD_COUNTRY: {
