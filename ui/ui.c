@@ -32,46 +32,43 @@ void print_menu() {
 
 void start_menu(UI* ui) {
 
-    int user_option;
-    int clear_buffer;
+
     while (1) {
         print_menu();
-        user_option = -1;
-        printf("\ninput > ");
-        scanf("%d", &user_option);
-        while ((clear_buffer = getc(stdin)) != '\n');
+        int user_option;
+        read_user_option(&user_option);
         switch (user_option) {
             case EXIT:
                 return;
             case DISPLAY_COUNTRIES: {
-                char country_name[256];
+                char country_name[50];
                 printf("String: ");
-                read_input_country_name(country_name, 256);
+                read_input_country_name(country_name, 50);
                 int size;
                 Country** countries = get_countries_containing_string(ui->service, country_name, &size);
                 if (size == 0) {
                     printf("\nThere are no countries with such a name");
                     break;
                 }
-                char temp[256];
-                country_to_string(countries[0], temp);
-                destroy_country(countries[0]);
-                printf("%d. %s", 1, temp);
+                char temporary_string[100];
+                country_to_string(countries[0], temporary_string);
+                printf("%d. %s", 1, temporary_string);
                 for (int i = 1; i < size; ++i) {
-                    country_to_string(countries[i], temp);
-                    printf("\n%d. %s", i + 1, temp);
-                    destroy_country(countries[i]);
+                    country_to_string(countries[i], temporary_string);
+                    printf("\n%d. %s", i + 1, temporary_string);
                 }
+                for (int i = 0; i < get_size(ui->service->repository); ++i)
+                    destroy_country(countries[i]);
                 break;
             }
             case ADD_COUNTRY: {
-                char country_name[256];
-                char country_continent[256];
+                char country_name[50];
+                char country_continent[50];
                 double population;
                 printf("Country name: ");
-                read_input_country_name(country_name, 256);
+                read_input_country_name(country_name, 50);
                 printf("Continent: ");
-                read_input_country_continent(country_continent, 256);
+                read_input_country_continent(country_continent, 50);
                 printf("Population: ");
                 read_input_country_population(&population);
                 if (add_country_service(ui->service, country_name, country_continent, population))
@@ -81,9 +78,9 @@ void start_menu(UI* ui) {
                 break;
             }
             case REMOVE_COUNTRY: {
-                char country_name[256];
+                char country_name[50];
                 printf("Country name: ");
-                read_input_country_name(country_name, 256);
+                read_input_country_name(country_name, 50);
                 if (remove_country_by_name_service(ui->service, country_name))
                     printf("Country %s removed successfully", country_name);
                 else
@@ -91,12 +88,96 @@ void start_menu(UI* ui) {
                 break;
             }
             case UPDATE_COUNTRY: {
+                print_update_country_submenu();
+                int update_submenu_option;
+                read_user_option(&update_submenu_option);
+                switch (update_submenu_option) {
+                    case 0:
+                        break;
+                    case 1: {
+                        char country_name_to_search[50];
+                        char country_new_name[50];
+                        printf("Country name to update: ");
+                        read_input_country_name(country_name_to_search, 50);
+                        printf("Country new name: ");
+                        read_input_country_name(country_new_name, 50);
+                        if (update_country_name(ui->service, country_name_to_search, country_new_name))
+                            printf("Update to name successful.");
+                        else
+                            printf("Update to name unsuccessful.");
+                        break;
+                    }
+                    case 2: {
+                        char country_name_to_search[50];
+                        char country_new_continent[50];
+                        printf("Country to update: ");
+                        read_input_country_name(country_name_to_search, 50);
+                        printf("Change continent to: ");
+                        read_input_country_continent(country_new_continent, 50);
+                        if (update_country_continent(ui->service, country_name_to_search, country_new_continent))
+                            printf("Update to continent successful.");
+                        else
+                            printf("Update to continent unsuccessful.");
+                        break;
+                    }
+                    case 3: {
+                        char country_name_to_search[50];
+                        double new_population;
+                        printf("Country to update: ");
+                        read_input_country_name(country_name_to_search, 50);
+                        printf("Change population to (millions): ");
+                        read_input_country_population(&new_population);
+                        if(update_country_population(ui->service, country_name_to_search, new_population)){
+                            printf("Successfully updated country population of %s", country_name_to_search);
+                        } else
+                            printf("Update to population unsuccessful.");
+                        break;
+                    }
+                    case 4:{
+                        char emigration_country_name[50];
+                        char immigration_country_name[50];
+                        double number_of_emigrants;
+                        printf("Emigrant country: ");
+                        read_input_country_name(emigration_country_name, 50);
+                        printf("Immigrant country: ");
+                        read_input_country_name(immigration_country_name, 50);
+                        printf("Number of emigrants(in millions): ");
+                        read_input_country_population(&number_of_emigrants);
+                        if(add_population_to_country(ui->service, emigration_country_name, -number_of_emigrants)){
+                            printf("People successfully migrated.");
+                            add_population_to_country(ui->service, immigration_country_name, number_of_emigrants);
+                        }
+                        else
+                            printf("Migration failed.");
+                        break;
+                    }
+                    default:
+                        printf("Unknown option");
+                        break;
+                }
                 break;
             }
             default:
                 printf("Unknown option");
+                break;
         }
     }
+}
+
+void read_user_option(int* user_option) {
+    int clear_buffer;
+    *user_option = -1;
+    printf("\ninput > ");
+    scanf("%d", user_option);
+    while ((clear_buffer = getc(stdin)) != '\n');
+}
+
+void print_update_country_submenu() {
+    printf("\t\t1. Update name");
+    printf("\n\t\t2. Update continent");
+    printf("\n\t\t3. Update population (no migration, negative population growth)");
+    printf("\n\t\t4. Migration");
+    printf("\n\t\t0. Exit submenu");
 }
 
 void read_input_country_name(char* country_name, int array_size) {

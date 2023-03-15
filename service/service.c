@@ -57,6 +57,53 @@ void initialize_hard_coded_countries(Service* service) {
     add_country_service(service, "india", "Asia", 2500);
     add_country_service(service, "zimbabwe", "Africa", 15);
 }
-int remove_country_by_name_service(Service* service, char* name){
+
+int remove_country_by_name_service(Service* service, char* name) {
     return remove_country_by_name(service->repository, name);
+}
+
+int update_country_name(Service* service, char* search_name, char* new_name) {
+    int found = 0;
+    for (int i = 0; i < get_size(service->repository); ++i) {
+        if (strcmp(get_name(service->repository->data[i]), search_name) == 0) {
+            strcpy(service->repository->data[i]->name, new_name);
+            found = 1;
+        }
+    }
+    return found;
+}
+
+int update_country_continent(Service* service, char* search_name, char* new_continent) {
+    int found = 0;
+    for (int i = 0; i < get_size(service->repository); ++i) {
+        if (strcmp(get_name(service->repository->data[i]), search_name) == 0) {
+            strcpy(service->repository->data[i]->continent, new_continent);
+            found = 1;
+        }
+    }
+    return found;
+}
+
+int update_country_population(Service* service, char* search_name, double new_population) {
+    int found = 0;
+    for (int i = 0; i < get_size(service->repository); ++i) {
+        if (strcmp(get_name(service->repository->data[i]), search_name) == 0) {
+            service->repository->data[i]->population = new_population;
+            found = 1;
+        }
+    }
+    return found;
+}
+
+int add_population_to_country(Service* service, char* search_name, double additional_population){
+    int successful = 0;
+    for (int i = 0; i < get_size(service->repository); ++i) {
+        if (strcmp(get_name(service->repository->data[i]), search_name) == 0) {
+            if (service->repository->data[i]->population + additional_population >= 0){
+                service->repository->data[i]->population += additional_population;
+                successful = 1;
+            }
+        }
+    }
+    return successful;
 }

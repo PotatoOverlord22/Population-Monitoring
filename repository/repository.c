@@ -53,8 +53,8 @@ int remove_country(Repository* repository, Country* country_to_remove) {
         if (strcmp(get_name(repository->data[i]), get_name(country_to_remove)) == 0 &&
             strcmp(get_continent(repository->data[i]), get_continent(country_to_remove)) == 0 &&
             get_population(repository->data[i]) == get_population(country_to_remove)) {
-            repository->data[i]->name = repository->data[repository->size - 1]->name;
-            repository->data[i]->continent = repository->data[repository->size - 1]->continent;
+            strcpy(repository->data[i]->name, repository->data[repository->size - 1]->name);
+            strcpy(repository->data[i]->continent, repository->data[repository->size - 1]->continent);
             repository->data[i]->population = repository->data[repository->size - 1]->population;
             repository->size--;
             found = 1;
