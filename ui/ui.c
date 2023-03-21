@@ -141,9 +141,9 @@ void start_menu(UI* ui) {
                         read_input_country_name(immigration_country_name, 50);
                         printf("Number of emigrants(in millions): ");
                         read_input_country_population(&number_of_emigrants);
-                        if(add_population_to_country(ui->service, emigration_country_name, -number_of_emigrants)){
+                        if(modify_population_by_value(ui->service, emigration_country_name, -number_of_emigrants)){
                             printf("People successfully migrated.");
-                            add_population_to_country(ui->service, immigration_country_name, number_of_emigrants);
+                            modify_population_by_value(ui->service, immigration_country_name, number_of_emigrants);
                         }
                         else
                             printf("Migration failed.");
