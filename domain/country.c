@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-Country* create_country(char* name, char* continent, double population) {
+Country* country_create(char* name, char* continent, double population) {
     Country* new_country = malloc(sizeof(Country));
     new_country->name = (char*) malloc((strlen(name) + 1) * sizeof(char));
     new_country->continent = (char*) malloc((strlen(continent) + 1) * sizeof(char));
@@ -13,7 +13,7 @@ Country* create_country(char* name, char* continent, double population) {
     return new_country;
 }
 
-void destroy_country(Country* country) {
+void country_destroy(Country* country) {
     free(country->name);
     free(country->continent);
     free(country);

@@ -7,18 +7,18 @@ typedef struct {
     int size;
 } Repository;
 
-Repository* create_repository();
+Repository* repository_create();
 
-void destroy_repository(Repository*);
+void repository_destroy(Repository* repository);
 
-Country** get_all(Repository*);
+Country** repository_get_all(Repository* repository);
 
-int get_size(Repository*);
+int repository_get_size(Repository* repository);
 
-int find_country(Repository*, Country*);
+int repository_find_country(Repository* repository, Country* country_to_find);
 
-int add_country(Repository*, Country* new_country);
+int repository_add_country(Repository* repository, Country* new_country);
 
-int remove_country(Repository*, Country* country_to_remove);
+int repository_remove_country(Repository* repository, Country* country_to_remove);
 
-int remove_country_by_name(Repository*, char*);
+int repository_remove_country_by_name(Repository* repository, char* name);

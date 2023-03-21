@@ -16,7 +16,7 @@ UI* create_ui(Service* service) {
 }
 
 void destroy_ui(UI* ui) {
-    destroy_service(ui->service);
+    service_destroy(ui->service);
     free(ui);
 }
 
@@ -45,7 +45,7 @@ void start_menu(UI* ui) {
                 printf("String: ");
                 read_input_country_name(country_name, 50);
                 int size;
-                Country** countries = get_countries_containing_string(ui->service, country_name, &size);
+                Country** countries = service_get_countries_containing_string(ui->service, country_name, &size);
                 if (size == 0) {
                     printf("\nThere are no countries with such a name");
                     break;
@@ -69,7 +69,7 @@ void start_menu(UI* ui) {
                 read_input_country_continent(country_continent, 50);
                 printf("Population: ");
                 read_input_country_population(&population);
-                if (add_country_service(ui->service, country_name, country_continent, population))
+                if (service_add_country(ui->service, country_name, country_continent, population))
                     printf("Country added successfully.");
                 else
                     printf("Could not add country.");
@@ -79,7 +79,7 @@ void start_menu(UI* ui) {
                 char country_name[50];
                 printf("Country name: ");
                 read_input_country_name(country_name, 50);
-                if (remove_country_by_name_service(ui->service, country_name))
+                if (service_remove_country_by_name(ui->service, country_name))
                     printf("Country %s removed successfully", country_name);
                 else
                     printf("Could not remove country");
@@ -99,7 +99,7 @@ void start_menu(UI* ui) {
                         read_input_country_name(country_name_to_search, 50);
                         printf("Country new name: ");
                         read_input_country_name(country_new_name, 50);
-                        if (update_country_name(ui->service, country_name_to_search, country_new_name))
+                        if (service_update_country_name(ui->service, country_name_to_search, country_new_name))
                             printf("Update to name successful.");
                         else
                             printf("Update to name unsuccessful.");
@@ -112,7 +112,7 @@ void start_menu(UI* ui) {
                         read_input_country_name(country_name_to_search, 50);
                         printf("Change continent to: ");
                         read_input_country_continent(country_new_continent, 50);
-                        if (update_country_continent(ui->service, country_name_to_search, country_new_continent))
+                        if (service_update_country_continent(ui->service, country_name_to_search, country_new_continent))
                             printf("Update to continent successful.");
                         else
                             printf("Update to continent unsuccessful.");
@@ -125,7 +125,7 @@ void start_menu(UI* ui) {
                         read_input_country_name(country_name_to_search, 50);
                         printf("Change population to (millions): ");
                         read_input_country_population(&new_population);
-                        if(update_country_population(ui->service, country_name_to_search, new_population)){
+                        if(service_update_country_population(ui->service, country_name_to_search, new_population)){
                             printf("Successfully updated country population of %s", country_name_to_search);
                         } else
                             printf("Update to population unsuccessful.");
@@ -141,9 +141,11 @@ void start_menu(UI* ui) {
                         read_input_country_name(immigration_country_name, 50);
                         printf("Number of emigrants(in millions): ");
                         read_input_country_population(&number_of_emigrants);
-                        if(modify_population_by_value(ui->service, emigration_country_name, -number_of_emigrants)){
+                        if(service_modify_population_by_value(ui->service, emigration_country_name,
+                                                              -number_of_emigrants)){
                             printf("People successfully migrated.");
-                            modify_population_by_value(ui->service, immigration_country_name, number_of_emigrants);
+                            service_modify_population_by_value(ui->service, immigration_country_name,
+                                                               number_of_emigrants);
                         }
                         else
                             printf("Migration failed.");

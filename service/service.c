@@ -2,43 +2,41 @@
 #include <stdlib.h>
 #include <string.h>
 
-Service* create_service(Repository* repository) {
+Service* service_create(Repository* repository) {
     Service* new_service = malloc(sizeof(Service));
     new_service->repository = repository;
     return new_service;
 }
 
-void destroy_service(Service* service) {
-    destroy_repository(service->repository);
+void service_destroy(Service* service) {
+    repository_destroy(service->repository);
     free(service);
 }
 
-int add_country_service(Service* service, char* name, char* continent, double population) {
+int service_add_country(Service* service, char* name, char* continent, double population) {
     /*
      *  Adds a country to the repository inside the service
      * returns -> True if the country was added successfully
      *         -> False if country was already in repository
      */
-    Country* new_country = create_country(name, continent, population);
-    return add_country(service->repository, new_country);
+    Country* new_country = country_create(name, continent, population);
+    return repository_add_country(service->repository, new_country);
 }
 
-int remove_country_service(Service* service, char* name, char* continent, double population) {
-    Country* country_to_remove = create_country(name, continent, population);
-    return remove_country(service->repository, country_to_remove);
+int service_remove_country(Service* service, char* name, char* continent, double population) {
+    Country* country_to_remove = country_create(name, continent, population);
+    return repository_remove_country(service->repository, country_to_remove);
 }
 
-void update_country_service(Service*, Country*);
-
-Country** get_countries_containing_string(Service* service, char* substring, int* size) {
-    Country** all_countries = get_all(service->repository);
+Country** service_get_countries_containing_string(Service* service, char* substring, int* size) {
+    Country** all_countries = repository_get_all(service->repository);
     if (strcmp(substring, "") == 0) {
-        *size = get_size(service->repository);
+        *size = repository_get_size(service->repository);
         return all_countries;
     }
-    Country** countries_with_string = malloc(sizeof(Country) * get_size(service->repository));
+    Country** countries_with_string = malloc(sizeof(Country) * repository_get_size(service->repository));
     *size = 0;
-    for (int i = 0; i < get_size(service->repository); ++i) {
+    for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strstr(get_name(all_countries[i]), substring) != 0) {
             countries_with_string[(*size)++] = service->repository->data[i];
         }
@@ -46,27 +44,27 @@ Country** get_countries_containing_string(Service* service, char* substring, int
     return countries_with_string;
 }
 
-void initialize_hard_coded_countries(Service* service) {
-    add_country_service(service, "germany", "Europe", 223.02);
-    add_country_service(service, "romania", "Europe", 19.3);
-    add_country_service(service, "poland", "Europe", 50);
-    add_country_service(service, "usa", "North America", 200.50);
-    add_country_service(service, "mexico", "North America", 40.3);
-    add_country_service(service, "brazil", "South America", 120);
-    add_country_service(service, "china", "Asia", 2000);
-    add_country_service(service, "japan", "Asia", 30);
-    add_country_service(service, "india", "Asia", 2500);
-    add_country_service(service, "zimbabwe", "Africa", 15);
+void service_initialize_hard_coded_countries(Service* service) {
+    service_add_country(service, "germany", "Europe", 223.02);
+    service_add_country(service, "romania", "Europe", 19.3);
+    service_add_country(service, "poland", "Europe", 50);
+    service_add_country(service, "usa", "North America", 200.50);
+    service_add_country(service, "mexico", "North America", 40.3);
+    service_add_country(service, "brazil", "South America", 120);
+    service_add_country(service, "china", "Asia", 2000);
+    service_add_country(service, "japan", "Asia", 30);
+    service_add_country(service, "india", "Asia", 2500);
+    service_add_country(service, "zimbabwe", "Africa", 15);
 }
 
-int remove_country_by_name_service(Service* service, char* name) {
-    return remove_country_by_name(service->repository, name);
+int service_remove_country_by_name(Service* service, char* name) {
+    return repository_remove_country_by_name(service->repository, name);
 }
 
-int update_country_name(Service* service, char* search_name, char* new_name) {
-    Country** all_countries = get_all(service->repository);
+int service_update_country_name(Service* service, char* search_name, char* new_name) {
+    Country** all_countries = repository_get_all(service->repository);
     int found = 0;
-    for (int i = 0; i < get_size(service->repository); ++i) {
+    for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strcmp(get_name(all_countries[i]), search_name) == 0) {
             set_name(all_countries[i], new_name);
             found = 1;
@@ -75,10 +73,10 @@ int update_country_name(Service* service, char* search_name, char* new_name) {
     return found;
 }
 
-int update_country_continent(Service* service, char* search_name, char* new_continent_name) {
-    Country** all_countries = get_all(service->repository);
+int service_update_country_continent(Service* service, char* search_name, char* new_continent_name) {
+    Country** all_countries = repository_get_all(service->repository);
     int found = 0;
-    for (int i = 0; i < get_size(service->repository); ++i) {
+    for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strcmp(get_name(all_countries[i]), search_name) == 0) {
             set_continent(all_countries[i], new_continent_name);
             found = 1;
@@ -87,10 +85,10 @@ int update_country_continent(Service* service, char* search_name, char* new_cont
     return found;
 }
 
-int update_country_population(Service* service, char* search_name, double new_population) {
-    Country** all_countries = get_all(service->repository);
+int service_update_country_population(Service* service, char* search_name, double new_population) {
+    Country** all_countries = repository_get_all(service->repository);
     int found = 0;
-    for (int i = 0; i < get_size(service->repository); ++i) {
+    for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strcmp(get_name(all_countries[i]), search_name) == 0) {
             set_population(all_countries[i], new_population);
             found = 1;
@@ -99,7 +97,7 @@ int update_country_population(Service* service, char* search_name, double new_po
     return found;
 }
 
-int modify_population_by_value(Service* service, char* search_name, double population_variation){
+int service_modify_population_by_value(Service* service, char* search_name, double population_variation) {
     /*
      *      Adds or subtracts from the population of a searched country by a specified amount
      * service -> operates on this service's repository
@@ -110,11 +108,11 @@ int modify_population_by_value(Service* service, char* search_name, double popul
      *        -> 0 if we failed, meaning we would've gotten a negative population by applying the population variation
      *               on the specified country
      */
-    Country** all_countries = get_all(service->repository);
+    Country** all_countries = repository_get_all(service->repository);
     int successful = 0;
-    for (int i = 0; i < get_size(service->repository); ++i) {
+    for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strcmp(get_name(all_countries[i]), search_name) == 0) {
-            if (get_population(all_countries[i]) + population_variation >= 0){
+            if (get_population(all_countries[i]) + population_variation >= 0) {
                 set_population(all_countries[i], get_population(all_countries[i]) + population_variation);
                 successful = 1;
             }

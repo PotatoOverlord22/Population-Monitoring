@@ -6,9 +6,9 @@ typedef struct {
     double population;
 }Country;
 
-Country *create_country(char* name, char* continent, double population);
+Country *country_create(char* name, char* continent, double population);
 
-void destroy_country(Country* country);
+void country_destroy(Country* country);
 
 char* get_name(Country* country);
 
