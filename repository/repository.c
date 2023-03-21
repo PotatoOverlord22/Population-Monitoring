@@ -51,11 +51,12 @@ int remove_country(Repository* repository, Country* country_to_remove) {
     int found = 0;
     for (int i = 0; i < repository->size; ++i) {
         if (strcmp(get_name(repository->data[i]), get_name(country_to_remove)) == 0 &&
-            strcmp(get_continent(repository->data[i]), get_continent(country_to_remove)) == 0 &&
-            get_population(repository->data[i]) == get_population(country_to_remove)) {
-            strcpy(repository->data[i]->name, repository->data[repository->size - 1]->name);
-            strcpy(repository->data[i]->continent, repository->data[repository->size - 1]->continent);
-            repository->data[i]->population = repository->data[repository->size - 1]->population;
+                strcmp(get_continent(repository->data[i]), get_continent(country_to_remove)) == 0 &&
+                get_population(repository->data[i]) == get_population(country_to_remove)) {
+
+            set_name(repository->data[i], get_name(repository->data[repository->size - 1]));
+            set_continent(repository->data[i], get_continent(repository->data[repository->size - 1]));
+            set_population(repository->data[i], get_population(repository->data[repository->size - 1]));
             destroy_country(repository->data[repository->size - 1]);
             repository->size--;
             found = 1;
@@ -73,9 +74,10 @@ int remove_country_by_name(Repository* repository, char* name) {
     int found = 0;
     for (int i = 0; i < repository->size; ++i) {
         if (strcmp(get_name(repository->data[i]), name) == 0) {
-            repository->data[i]->name = repository->data[repository->size - 1]->name;
-            repository->data[i]->continent = repository->data[repository->size - 1]->continent;
-            repository->data[i]->population = repository->data[repository->size - 1]->population;
+            set_name(repository->data[i], get_name(repository->data[repository->size - 1]));
+            set_continent(repository->data[i], get_continent(repository->data[repository->size - 1]));
+            set_population(repository->data[i], get_population(repository->data[repository->size - 1]));
+            destroy_country(repository->data[repository->size - 1]);
             repository->size--;
             found = 1;
         }
