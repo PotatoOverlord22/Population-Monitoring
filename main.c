@@ -3,9 +3,9 @@ int main() {
     Repository* repository = repository_create();
     Service* service = service_create(repository);
     service_initialize_hard_coded_countries(service);
-    UI* ui = create_ui(service);
+    UI* ui = ui_create(service);
     start_menu(ui);
 
-    destroy_ui(ui);
+    ui_destroy(ui);
     return 0;
 }

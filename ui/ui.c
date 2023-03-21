@@ -9,13 +9,13 @@
 #define REMOVE_COUNTRY 3
 #define UPDATE_COUNTRY 4
 
-UI* create_ui(Service* service) {
+UI* ui_create(Service* service) {
     UI* new_ui = malloc(sizeof(UI));
     new_ui->service = service;
     return new_ui;
 }
 
-void destroy_ui(UI* ui) {
+void ui_destroy(UI* ui) {
     service_destroy(ui->service);
     free(ui);
 }

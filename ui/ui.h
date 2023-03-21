@@ -6,9 +6,9 @@ typedef struct {
     Service* service;
 } UI;
 
-UI* create_ui(Service*);
+UI* ui_create(Service* service);
 
-void destroy_ui(UI*);
+void ui_destroy(UI* ui);
 
 void print_menu();
 
