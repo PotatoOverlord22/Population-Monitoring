@@ -45,7 +45,7 @@ void set_name(Country* country, char* new_name){
 }
 
 void set_continent(Country* country, char* new_continent){
-    if (country->name == new_continent)
+    if (country->continent == new_continent)
         return;
     if (strlen(new_continent) > strlen(country->continent)){
         free(country->continent);
