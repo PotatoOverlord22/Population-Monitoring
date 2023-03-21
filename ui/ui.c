@@ -4,10 +4,11 @@
 #include <string.h>
 
 #define EXIT 0
-#define DISPLAY_COUNTRIES 1
+#define DISPLAY_COUNTRIES_BY_NAME 1
 #define ADD_COUNTRY 2
 #define REMOVE_COUNTRY 3
 #define UPDATE_COUNTRY 4
+#define DISPLAY_COUNTRIES_BY_CONTINENT 5
 
 UI* ui_create(Service* service) {
     UI* new_ui = malloc(sizeof(UI));
@@ -26,6 +27,7 @@ void print_menu() {
     printf("\n\t2. Add country");
     printf("\n\t3. Remove country");
     printf("\n\t4. Update country");
+    printf("\n\t5. Display all countries on a given continent whose populations are greater than a given value");
     printf("\n\t0. EXIT");
 }
 
@@ -40,12 +42,13 @@ void start_menu(UI* ui) {
         switch (user_option) {
             case EXIT:
                 return;
-            case DISPLAY_COUNTRIES: {
+            case DISPLAY_COUNTRIES_BY_NAME: {
                 char country_name[50];
                 printf("String: ");
                 read_input_country_name(country_name, 50);
                 int size;
-                Country** countries = service_get_countries_containing_string(ui->service, country_name, &size);
+                Country** countries = malloc(sizeof(Country) * service_get_repository_size(ui->service));
+                service_get_countries_containing_string(ui->service, countries, country_name, &size);
                 if (size == 0) {
                     printf("\nThere are no countries with such a name");
                     break;
@@ -57,6 +60,7 @@ void start_menu(UI* ui) {
                     country_to_string(countries[i], temporary_string);
                     printf("\n%d. %s", i + 1, temporary_string);
                 }
+                free(countries);
                 break;
             }
             case ADD_COUNTRY: {
@@ -157,6 +161,8 @@ void start_menu(UI* ui) {
                 }
                 break;
             }
+            case DISPLAY_COUNTRIES_BY_CONTINENT:
+                break;
             default:
                 printf("Unknown option");
                 break;

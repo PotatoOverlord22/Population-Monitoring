@@ -28,21 +28,26 @@ int service_remove_country(Service* service, char* name, char* continent, double
     return repository_remove_country(service->repository, country_to_remove);
 }
 
-Country** service_get_countries_containing_string(Service* service, char* substring, int* size) {
+void service_get_countries_containing_string(Service* service, Country** countries_with_string, char* substring, int* size) {
     Country** all_countries = (Country**) repository_get_all(service->repository);
     if (strcmp(substring, "") == 0) {
         *size = repository_get_size(service->repository);
-        return all_countries;
+        for (int i = 0; i < repository_get_size(service->repository); ++i)
+            countries_with_string[i] = all_countries[i];
+        return;
     }
-    Country** countries_with_string = malloc(sizeof(Country) * repository_get_size(service->repository));
     *size = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strstr(get_name(all_countries[i]), substring) != 0) {
             countries_with_string[(*size)++] = all_countries[i];
         }
     }
-    return countries_with_string;
 }
+
+void
+service_get_countries_by_continent_and_min_population(Service* service, Country*** selected_countries,
+                                                      char* searched_continent, double min_population,
+                                                      int (* sort_relation)(Country*, Country*));
 
 void service_initialize_hard_coded_countries(Service* service) {
     service_add_country(service, "germany", "Europe", 223.02);
@@ -119,4 +124,8 @@ int service_modify_population_by_value(Service* service, char* search_name, doub
         }
     }
     return successful;
+}
+
+int service_get_repository_size(Service* service){
+    return repository_get_size(service->repository);
 }
