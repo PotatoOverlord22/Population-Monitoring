@@ -29,7 +29,7 @@ int service_remove_country(Service* service, char* name, char* continent, double
 }
 
 Country** service_get_countries_containing_string(Service* service, char* substring, int* size) {
-    Country** all_countries = repository_get_all(service->repository);
+    Country** all_countries = (Country**) repository_get_all(service->repository);
     if (strcmp(substring, "") == 0) {
         *size = repository_get_size(service->repository);
         return all_countries;
@@ -38,7 +38,7 @@ Country** service_get_countries_containing_string(Service* service, char* substr
     *size = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strstr(get_name(all_countries[i]), substring) != 0) {
-            countries_with_string[(*size)++] = service->repository->data[i];
+            countries_with_string[(*size)++] = all_countries[i];
         }
     }
     return countries_with_string;
@@ -62,7 +62,7 @@ int service_remove_country_by_name(Service* service, char* name) {
 }
 
 int service_update_country_name(Service* service, char* search_name, char* new_name) {
-    Country** all_countries = repository_get_all(service->repository);
+    Country** all_countries = (Country**) repository_get_all(service->repository);
     int found = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strcmp(get_name(all_countries[i]), search_name) == 0) {
@@ -74,7 +74,7 @@ int service_update_country_name(Service* service, char* search_name, char* new_n
 }
 
 int service_update_country_continent(Service* service, char* search_name, char* new_continent_name) {
-    Country** all_countries = repository_get_all(service->repository);
+    Country** all_countries = (Country**) repository_get_all(service->repository);
     int found = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strcmp(get_name(all_countries[i]), search_name) == 0) {
@@ -86,7 +86,7 @@ int service_update_country_continent(Service* service, char* search_name, char* 
 }
 
 int service_update_country_population(Service* service, char* search_name, double new_population) {
-    Country** all_countries = repository_get_all(service->repository);
+    Country** all_countries = (Country**) repository_get_all(service->repository);
     int found = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strcmp(get_name(all_countries[i]), search_name) == 0) {
@@ -108,7 +108,7 @@ int service_modify_population_by_value(Service* service, char* search_name, doub
      *        -> 0 if we failed, meaning we would've gotten a negative population by applying the population variation
      *               on the specified country
      */
-    Country** all_countries = repository_get_all(service->repository);
+    Country** all_countries = (Country**) repository_get_all(service->repository);
     int successful = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
         if (strcmp(get_name(all_countries[i]), search_name) == 0) {

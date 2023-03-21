@@ -1,17 +1,17 @@
 #pragma once
 
 #include "../domain/country.h"
+#include "vector.h"
 
 typedef struct {
-    Country** data;
-    int size;
+    Vector* data;
 } Repository;
 
 Repository* repository_create();
 
 void repository_destroy(Repository* repository);
 
-Country** repository_get_all(Repository* repository);
+void** repository_get_all(Repository* repository);
 
 int repository_get_size(Repository* repository);
 
