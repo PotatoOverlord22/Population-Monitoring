@@ -1,4 +1,5 @@
 #pragma once
+#include "../domain/country.h"
 
 typedef struct {
     void** data;
@@ -9,7 +10,7 @@ typedef struct {
 
 Vector* vector_create(int element_size);
 
-void vector_destroy(Vector*, void destroy_item());
+void vector_destroy(Vector*, void destroy_item(void*));
 
 void vector_resize(Vector*, int resize_factor);
 
@@ -22,3 +23,5 @@ int vector_get_size(Vector*);
 void** vector_get_all(Vector*);
 
 int vector_remove_item(Vector* vector, int item_index, void (*destroy_item)());
+
+void vector_make_copy(Vector** destination_vector, Vector* source_vector, void (*make_item_copy)(void**, void*));

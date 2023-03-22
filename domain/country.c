@@ -5,8 +5,19 @@
 
 Country* country_create(char* name, char* continent, double population) {
     Country* new_country = malloc(sizeof(Country));
+    if (!new_country)
+        return NULL;
     new_country->name = (char*) malloc((strlen(name) + 1) * sizeof(char));
+    if (!new_country->name){
+        free(new_country);
+        return NULL;
+    }
     new_country->continent = (char*) malloc((strlen(continent) + 1) * sizeof(char));
+    if(!new_country->continent){
+        free(new_country->name);
+        free(new_country);
+        return NULL;
+    }
     new_country->population = population;
     strcpy(new_country->name, name);
     strcpy(new_country->continent, continent);
@@ -60,5 +71,9 @@ void set_population(Country* country, double new_population){
 }
 
 void country_to_string(Country* country, char* string){
-    sprintf(string, "%s in continent %s with population %lf millions", country->name, country->continent, country->population);
+    sprintf(string, "%s in continent %s with population %.2f millions", country->name, country->continent, country->population);
+}
+
+void country_make_copy(Country** copy_country, Country* source_country){
+    *copy_country = country_create(get_name(source_country), get_continent(source_country), get_population(source_country));
 }

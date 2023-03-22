@@ -9,6 +9,8 @@
 #define REMOVE_COUNTRY 3
 #define UPDATE_COUNTRY 4
 #define DISPLAY_COUNTRIES_BY_CONTINENT 5
+#define UNDO 6
+#define REDO 7
 
 UI* ui_create(Service* service) {
     UI* new_ui = malloc(sizeof(UI));
@@ -29,7 +31,7 @@ void print_menu() {
     printf("\n\t4. Update country");
     printf("\n\t5. Display all countries on a given continent whose populations are greater than a given value");
     printf("\n\t6. Undo");
-    printf("\n\t5. Redo");
+    printf("\n\t7. Redo");
     printf("\n\t0. EXIT");
 }
 
@@ -200,6 +202,20 @@ void start_menu(UI* ui) {
                     printf("\n%d. %s", i + 1, temporary_string);
                 }
                 free(selected_countries);
+                break;
+            }
+            case UNDO:{
+                if (service_undo(ui->service))
+                    printf("Undo successful");
+                else
+                    printf("No more undos!");
+                break;
+            }
+            case REDO:{
+                if (service_redo(ui->service))
+                    printf("Redo successful");
+                else
+                    printf("No more redos!");
                 break;
             }
             default:

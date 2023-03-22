@@ -16,7 +16,7 @@ Vector* vector_create(int element_size) {
     return new_vector;
 }
 
-void vector_destroy(Vector* vector, void destroy_item()) {
+void vector_destroy(Vector* vector, void destroy_item(void*)) {
     for (int i = 0; i < vector->size; ++i)
         destroy_item(vector->data[i]);
     free(vector->data);
@@ -33,7 +33,7 @@ void vector_resize(Vector* vector, int resize_factor) {
 }
 
 void* vector_get_item(Vector* vector, int index) {
-    if (index >= vector->size)
+    if (index >= vector->size || index < 0)
         return NULL;
     return vector->data[index];
 }
@@ -54,14 +54,26 @@ void** vector_get_all(Vector* vector) {
     return vector->data;
 }
 
-int vector_remove_item(Vector* vector, int item_index, void (*destroy_item)()){
-    if (item_index >= vector->size)
+int vector_remove_item(Vector* vector, int item_index, void (* destroy_item)(void*)) {
+    if (item_index >= vector->size || item_index < 0)
         return 0;
     void* item_to_free = vector->data[item_index];
-    for (int i = item_index; i < vector->size - 1; ++i){
+    for (int i = item_index; i < vector->size - 1; ++i) {
         vector->data[i] = vector->data[i + 1];
     }
     destroy_item(item_to_free);
     vector->size--;
     return 1;
+}
+
+void vector_make_copy(Vector** destination_vector, Vector* source_vector, void (*make_item_copy)(void**, void*)) {
+    *destination_vector = vector_create(source_vector->element_size);
+    if (*destination_vector == NULL){
+        return;
+    }
+    for (int i = 0; i < vector_get_size(source_vector); ++i){
+        void* item_copy;
+        make_item_copy(&item_copy, vector_get_item(source_vector, i));
+        vector_add_item(*destination_vector, item_copy);
+    }
 }
