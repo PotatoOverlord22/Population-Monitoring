@@ -29,7 +29,7 @@ int service_add_country(Service* service, char* name, char* continent, double po
 }
 
 int service_remove_country(Service* service, char* name, char* continent, double population) {
-    //undo_add(service->undo, service->repository);
+    undo_add(service->undo, service->repository);
     Country* country_to_remove = country_create(name, continent, population);
     return repository_remove_country(service->repository, country_to_remove);
 }
@@ -80,25 +80,25 @@ service_get_countries_by_continent_and_min_population(Service* service, Country*
 }
 
 void service_initialize_hard_coded_countries(Service* service) {
-    service_add_country(service, "germany", "europe", 223.02);
-    service_add_country(service, "romania", "europe", 19.3);
-    service_add_country(service, "poland", "europe", 50);
-    service_add_country(service, "usa", "north america", 200.50);
-    service_add_country(service, "mexico", "north america", 40.3);
-    service_add_country(service, "brazil", "south america", 120);
-    service_add_country(service, "china", "asia", 2000);
-    service_add_country(service, "japan", "asia", 30);
-    service_add_country(service, "india", "asia", 2500);
-    service_add_country(service, "zimbabwe", "africa", 15);
+    repository_add_country(service->repository, country_create("germany", "europe", 223.02));
+    repository_add_country(service->repository, country_create("romania", "europe", 19.3));
+    repository_add_country(service->repository, country_create("poland", "europe", 50));
+    repository_add_country(service->repository, country_create("usa", "north america", 200.50));
+    repository_add_country(service->repository, country_create("mexico", "north america", 40.3));
+    repository_add_country(service->repository, country_create("brazil", "south america", 120));
+    repository_add_country(service->repository, country_create("china", "asia", 2000));
+    repository_add_country(service->repository, country_create("japan", "asia", 30));
+    repository_add_country(service->repository, country_create("india", "asia", 2500));
+    repository_add_country(service->repository, country_create("zimbabwe", "africa", 15));
 }
 
 int service_remove_country_by_name(Service* service, char* name) {
-    //undo_add(service->undo, service->repository);
+    undo_add(service->undo, service->repository);
     return repository_remove_country_by_name(service->repository, name);
 }
 
 int service_update_country_name(Service* service, char* search_name, char* new_name) {
-    //undo_add(service->undo, service->repository);
+    undo_add(service->undo, service->repository);
     Country** all_countries = (Country**) repository_get_all(service->repository);
     int found = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
@@ -111,7 +111,7 @@ int service_update_country_name(Service* service, char* search_name, char* new_n
 }
 
 int service_update_country_continent(Service* service, char* search_name, char* new_continent_name) {
-    //undo_add(service->undo, service->repository);
+    undo_add(service->undo, service->repository);
     Country** all_countries = (Country**) repository_get_all(service->repository);
     int found = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
@@ -124,7 +124,7 @@ int service_update_country_continent(Service* service, char* search_name, char* 
 }
 
 int service_update_country_population(Service* service, char* search_name, double new_population) {
-    //undo_add(service->undo, service->repository);
+    undo_add(service->undo, service->repository);
     Country** all_countries = (Country**) repository_get_all(service->repository);
     int found = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
