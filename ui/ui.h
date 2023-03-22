@@ -24,3 +24,5 @@ void read_input_country_population(double* population);
 
 void read_user_option(int* user_option);
 
+void read_input_int(int* user_int);
+

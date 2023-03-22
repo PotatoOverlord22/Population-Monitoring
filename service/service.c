@@ -28,7 +28,8 @@ int service_remove_country(Service* service, char* name, char* continent, double
     return repository_remove_country(service->repository, country_to_remove);
 }
 
-void service_get_countries_containing_string(Service* service, Country** countries_with_string, char* substring, int* size) {
+void
+service_get_countries_containing_string(Service* service, Country** countries_with_string, char* substring, int* size) {
     Country** all_countries = (Country**) repository_get_all(service->repository);
     if (strcmp(substring, "") == 0) {
         *size = repository_get_size(service->repository);
@@ -45,21 +46,44 @@ void service_get_countries_containing_string(Service* service, Country** countri
 }
 
 void
-service_get_countries_by_continent_and_min_population(Service* service, Country*** selected_countries,
+service_get_countries_by_continent_and_min_population(Service* service, Country** selected_countries, int* size,
                                                       char* searched_continent, double min_population,
-                                                      int (* sort_relation)(Country*, Country*));
+                                                      int (* sort_relation)(double, double)) {
+    Country** all_countries = (Country**) repository_get_all(service->repository);
+    *size = 0;
+    if (strcmp(searched_continent, "") == 0) {
+        for (int i = 0; i < repository_get_size(service->repository); ++i) {
+            if (get_population(all_countries[i]) > min_population) {
+                selected_countries[(*size)++] = all_countries[i];
+            }
+        }
+    } else {
+        for (int i = 0; i < repository_get_size(service->repository); ++i) {
+            if (get_population(all_countries[i]) > min_population &&
+                strcmp(get_continent(all_countries[i]), searched_continent) == 0) {
+                selected_countries[(*size)++] = all_countries[i];
+            }
+        }
+    }
+    for (int i = 0; i < (*size) - 1; ++i) {
+        for (int j = i + 1; j < *size; ++j)
+            if (!sort_relation(get_population(selected_countries[i]), get_population(selected_countries[j]))) {
+                service_swap_country_fields(selected_countries[i], selected_countries[j]);
+            }
+    }
+}
 
 void service_initialize_hard_coded_countries(Service* service) {
-    service_add_country(service, "germany", "Europe", 223.02);
-    service_add_country(service, "romania", "Europe", 19.3);
-    service_add_country(service, "poland", "Europe", 50);
-    service_add_country(service, "usa", "North America", 200.50);
-    service_add_country(service, "mexico", "North America", 40.3);
-    service_add_country(service, "brazil", "South America", 120);
-    service_add_country(service, "china", "Asia", 2000);
-    service_add_country(service, "japan", "Asia", 30);
-    service_add_country(service, "india", "Asia", 2500);
-    service_add_country(service, "zimbabwe", "Africa", 15);
+    service_add_country(service, "germany", "europe", 223.02);
+    service_add_country(service, "romania", "europe", 19.3);
+    service_add_country(service, "poland", "europe", 50);
+    service_add_country(service, "usa", "north america", 200.50);
+    service_add_country(service, "mexico", "north america", 40.3);
+    service_add_country(service, "brazil", "south america", 120);
+    service_add_country(service, "china", "asia", 2000);
+    service_add_country(service, "japan", "asia", 30);
+    service_add_country(service, "india", "asia", 2500);
+    service_add_country(service, "zimbabwe", "africa", 15);
 }
 
 int service_remove_country_by_name(Service* service, char* name) {
@@ -126,6 +150,29 @@ int service_modify_population_by_value(Service* service, char* search_name, doub
     return successful;
 }
 
-int service_get_repository_size(Service* service){
+int service_get_repository_size(Service* service) {
     return repository_get_size(service->repository);
+}
+
+int descending(double first, double second) {
+    return first > second;
+}
+
+int ascending(double first, double second) {
+    return first < second;
+}
+
+void service_swap_country_fields(Country* first_country, Country* second_country) {
+    char temp_name[strlen(get_name(first_country)) + 1];
+    char temp_continent[strlen(get_continent(first_country)) + 1];
+    double temp_population;
+    strcpy(temp_name, get_name(first_country));
+    strcpy(temp_continent, get_continent(first_country));
+    temp_population = get_population(first_country);
+    set_name(first_country, get_name(second_country));
+    set_name(second_country, temp_name);
+    set_continent(first_country, get_continent(second_country));
+    set_continent(second_country, temp_continent);
+    set_population(first_country, get_population(second_country));
+    set_population(second_country, temp_population);
 }
