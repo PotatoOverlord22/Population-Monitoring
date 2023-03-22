@@ -23,7 +23,7 @@
 1. Implement the following requirements using function pointers **[deadline: week 4, bonus: 0.1p]**:
     - For requirement **b**, add a different type of filtering (of your choice).
     - For requirement **c**, add descending sorting. The user should choose the type of sort and the program will show the list of entities accordingly.
-2. Provide 2 different implementations for the undo_list/redo_list functionality: one using a list of operations (this approach is a precursor of the [Command design pattern](https://en.wikipedia.org/wiki/Command_pattern)) and one where each state of the repository is recorded (this approach is not unlike the [Memento design pattern](https://en.wikipedia.org/wiki/Memento_pattern)). Implement your dynamic array generically, such that it can contain any type of elements (use void*). Use this structure for your repository, as well as to implement both undo_list/redo_list functionalities **[deadline: week 5, bonus: 0.1p]**.
+2. Provide 2 different implementations for the undo/redo functionality: one using a list of operations (this approach is a precursor of the [Command design pattern](https://en.wikipedia.org/wiki/Command_pattern)) and one where each state of the repository is recorded (this approach is not unlike the [Memento design pattern](https://en.wikipedia.org/wiki/Memento_pattern)). Implement your dynamic array generically, such that it can contain any type of elements (use void*). Use this structure for your repository, as well as to implement both undo_list/redo_list functionalities **[deadline: week 5, bonus: 0.1p]**.
 
 ## Problem Statements
 
