@@ -22,3 +22,5 @@ int repository_add_country(Repository* repository, Country* new_country);
 int repository_remove_country(Repository* repository, Country* country_to_remove);
 
 int repository_remove_country_by_name(Repository* repository, char* name);
+
+void repository_make_copy(Repository** destination_repository, Repository* source_repository);

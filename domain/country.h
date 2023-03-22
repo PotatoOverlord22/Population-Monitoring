@@ -4,9 +4,9 @@ typedef struct {
     char* name;
     char* continent;
     double population;
-}Country;
+} Country;
 
-Country *country_create(char* name, char* continent, double population);
+Country* country_create(char* name, char* continent, double population);
 
 void country_destroy(Country* country);
 
@@ -22,4 +22,6 @@ void set_continent(Country*, char* new_continent);
 
 void set_population(Country*, double new_population);
 
-void country_to_string(Country* country, char*string);
+void country_to_string(Country* country, char* string);
+
+void country_make_copy(Country** copy_country, Country* source_country);

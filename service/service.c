@@ -5,11 +5,15 @@
 Service* service_create(Repository* repository) {
     Service* new_service = malloc(sizeof(Service));
     new_service->repository = repository;
+    new_service->undo = undo_create();
+    new_service->redo = redo_create();
     return new_service;
 }
 
 void service_destroy(Service* service) {
     repository_destroy(service->repository);
+    undo_destroy(service->undo);
+    redo_destroy(service->redo);
     free(service);
 }
 
@@ -19,11 +23,13 @@ int service_add_country(Service* service, char* name, char* continent, double po
      * returns -> True if the country was added successfully
      *         -> False if country was already in repository
      */
+    undo_add(service->undo, service->repository);
     Country* new_country = country_create(name, continent, population);
     return repository_add_country(service->repository, new_country);
 }
 
 int service_remove_country(Service* service, char* name, char* continent, double population) {
+    //undo_add(service->undo, service->repository);
     Country* country_to_remove = country_create(name, continent, population);
     return repository_remove_country(service->repository, country_to_remove);
 }
@@ -87,10 +93,12 @@ void service_initialize_hard_coded_countries(Service* service) {
 }
 
 int service_remove_country_by_name(Service* service, char* name) {
+    //undo_add(service->undo, service->repository);
     return repository_remove_country_by_name(service->repository, name);
 }
 
 int service_update_country_name(Service* service, char* search_name, char* new_name) {
+    //undo_add(service->undo, service->repository);
     Country** all_countries = (Country**) repository_get_all(service->repository);
     int found = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
@@ -103,6 +111,7 @@ int service_update_country_name(Service* service, char* search_name, char* new_n
 }
 
 int service_update_country_continent(Service* service, char* search_name, char* new_continent_name) {
+    //undo_add(service->undo, service->repository);
     Country** all_countries = (Country**) repository_get_all(service->repository);
     int found = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
@@ -115,6 +124,7 @@ int service_update_country_continent(Service* service, char* search_name, char* 
 }
 
 int service_update_country_population(Service* service, char* search_name, double new_population) {
+    //undo_add(service->undo, service->repository);
     Country** all_countries = (Country**) repository_get_all(service->repository);
     int found = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
@@ -137,6 +147,7 @@ int service_modify_population_by_value(Service* service, char* search_name, doub
      *        -> 0 if we failed, meaning we would've gotten a negative population by applying the population variation
      *               on the specified country
      */
+    //undo_add(service->undo, service->repository);
     Country** all_countries = (Country**) repository_get_all(service->repository);
     int successful = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
@@ -175,4 +186,12 @@ void service_swap_country_fields(Country* first_country, Country* second_country
     set_continent(second_country, temp_continent);
     set_population(first_country, get_population(second_country));
     set_population(second_country, temp_population);
+}
+
+int service_undo(Service* service){
+    return undo(service->undo, &service->repository, service->redo);
+}
+
+int service_redo(Service* service){
+    return redo(service->redo, &service->repository, service->undo);
 }

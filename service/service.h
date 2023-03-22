@@ -1,9 +1,12 @@
 #pragma once
 
 #include "../repository/repository.h"
+#include "../repository/undo_redo.h"
 
 typedef struct {
     Repository* repository;
+    Undo* undo;
+    Redo* redo;
 } Service;
 
 Service* service_create(Repository* repository);
@@ -41,3 +44,7 @@ int descending(double, double);
 int ascending(double first, double second);
 
 void service_swap_country_fields(Country* first_country, Country* second_country);
+
+int service_undo(Service*);
+
+int service_redo(Service*);
