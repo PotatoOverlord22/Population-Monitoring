@@ -5,12 +5,13 @@
 
 #define EXIT 0
 #define DISPLAY_COUNTRIES_BY_NAME 1
-#define ADD_COUNTRY 2
-#define REMOVE_COUNTRY 3
-#define UPDATE_COUNTRY 4
-#define DISPLAY_COUNTRIES_BY_CONTINENT 5
-#define UNDO 6
-#define REDO 7
+#define DISPLAY_COUNTRIES_UP_TO_POPULATION 2
+#define ADD_COUNTRY 3
+#define REMOVE_COUNTRY 4
+#define UPDATE_COUNTRY 5
+#define DISPLAY_COUNTRIES_BY_CONTINENT 6
+#define UNDO 7
+#define REDO 8
 
 UI* ui_create(Service* service) {
     UI* new_ui = malloc(sizeof(UI));
@@ -26,12 +27,13 @@ void ui_destroy(UI* ui) {
 void print_menu() {
     printf("\nMenu:");
     printf("\n\t1. Display countries containing a string");
-    printf("\n\t2. Add country");
-    printf("\n\t3. Remove country");
-    printf("\n\t4. Update country");
-    printf("\n\t5. Display all countries on a given continent whose populations are greater than a given value");
-    printf("\n\t6. Undo");
-    printf("\n\t7. Redo");
+    printf("\n\t2. Display countries up to a max population");
+    printf("\n\t3. Add country");
+    printf("\n\t4. Remove country");
+    printf("\n\t5. Update country");
+    printf("\n\t6. Display all countries on a given continent whose populations are greater than a given value");
+    printf("\n\t7. Undo");
+    printf("\n\t8. Redo");
     printf("\n\t0. EXIT");
 }
 
@@ -52,7 +54,8 @@ void start_menu(UI* ui) {
                 read_input_country_name(country_name, 50);
                 int size;
                 Country** countries = malloc(sizeof(Country) * service_get_repository_size(ui->service));
-                service_get_countries_containing_string(ui->service, countries, country_name, &size);
+                service_get_countries_respecting_relation(ui->service, countries, &size, (void *) country_name,
+                                                          (int (*)(Country*, void*)) containing_string);
                 if (size == 0) {
                     printf("\nThere are no countries with such a name");
                     free(countries);
@@ -218,6 +221,29 @@ void start_menu(UI* ui) {
                     printf("No more redos!");
                 break;
             }
+            case DISPLAY_COUNTRIES_UP_TO_POPULATION:{
+                printf("Population limit: ");
+                double population_limit;
+                read_input_double(&population_limit);
+                int size;
+                Country** countries = malloc(sizeof(Country) * service_get_repository_size(ui->service));
+                service_get_countries_respecting_relation(ui->service, countries, &size, (void *) &population_limit,
+                                                          (int (*)(Country*, void*)) max_population);
+                if (size == 0) {
+                    printf("\nThere are no countries with such a population limit.");
+                    free(countries);
+                    break;
+                }
+                char temporary_string[100];
+                country_to_string(countries[0], temporary_string);
+                printf("%d. %s", 1, temporary_string);
+                for (int i = 1; i < size; ++i) {
+                    country_to_string(countries[i], temporary_string);
+                    printf("\n%d. %s", i + 1, temporary_string);
+                }
+                free(countries);
+                break;
+            }
             default:
                 printf("Unknown option");
                 break;
@@ -257,4 +283,8 @@ void read_input_country_population(double* population) {
 
 void read_input_int(int* user_int) {
     scanf("%d", user_int);
+}
+
+void read_input_double(double* user_double) {
+    scanf("%lf", user_double);
 }

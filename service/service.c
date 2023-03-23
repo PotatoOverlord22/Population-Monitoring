@@ -35,18 +35,12 @@ int service_remove_country(Service* service, char* name, char* continent, double
 }
 
 void
-service_get_countries_containing_string(Service* service, Country** countries_with_string, char* substring, int* size) {
+service_get_countries_respecting_relation(Service* service, Country** countries_respecting_relation, int* size, void* restriction, int (*relation)(Country*, void*)) {
     Country** all_countries = (Country**) repository_get_all(service->repository);
-    if (strcmp(substring, "") == 0) {
-        *size = repository_get_size(service->repository);
-        for (int i = 0; i < repository_get_size(service->repository); ++i)
-            countries_with_string[i] = all_countries[i];
-        return;
-    }
     *size = 0;
     for (int i = 0; i < repository_get_size(service->repository); ++i) {
-        if (strstr(get_name(all_countries[i]), substring) != 0) {
-            countries_with_string[(*size)++] = all_countries[i];
+        if (relation(all_countries[i], restriction)) {
+            countries_respecting_relation[(*size)++] = all_countries[i];
         }
     }
 }
@@ -171,6 +165,20 @@ int descending(double first, double second) {
 
 int ascending(double first, double second) {
     return first < second;
+}
+
+int max_population(Country* country, const double* max_population){
+    if(get_population(country) <= *max_population)
+        return 1;
+    return 0;
+}
+
+int containing_string(Country* country, char* substring){
+    if (strcmp(substring, "") == 0)
+        return 1;
+    if (strstr(get_name(country), substring) == NULL)
+        return 0;
+    return 1;
 }
 
 void service_swap_country_fields(Country* first_country, Country* second_country) {

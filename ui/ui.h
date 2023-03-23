@@ -26,3 +26,5 @@ void read_user_option(int* user_option);
 
 void read_input_int(int* user_int);
 
+void read_input_double(double* user_double);
+

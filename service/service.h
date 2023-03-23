@@ -18,7 +18,7 @@ int service_add_country(Service* service, char* name, char* continent, double po
 int service_remove_country(Service* service, char* name, char* continent, double population);
 
 void
-service_get_countries_containing_string(Service* service, Country** countries_with_string, char* substring, int* size);
+service_get_countries_respecting_relation(Service* service, Country** countries_respecting_relation, int* size, void* restriction, int (*relation)(Country*, void*));
 
 void
 service_get_countries_by_continent_and_min_population(Service* service, Country** selected_countries, int* size,
@@ -42,6 +42,10 @@ int service_get_repository_size(Service* service);
 int descending(double, double);
 
 int ascending(double first, double second);
+
+int max_population(Country* country, const double* max_population);
+
+int containing_string(Country* country, char* substring);
 
 void service_swap_country_fields(Country* first_country, Country* second_country);
 
